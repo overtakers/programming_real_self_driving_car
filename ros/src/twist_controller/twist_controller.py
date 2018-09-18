@@ -3,6 +3,8 @@ from lowpass import LowPassFilter
 from yaw_controller import YawController
 import rospy
 
+import math
+
 GAS_DENSITY = 2.858
 ONE_MPH = 0.44704
 
@@ -15,27 +17,40 @@ class Controller(object):
 			accel_limit, wheel_radius, wheel_base, steer_ratio, max_lat_accel, 
             max_steer_angle):
 
-	    self.yaw_controller = YawController(wheel_base, steer_ratio, 0.1, max_lat_accel, max_steer_angle)
+        self.yaw_controller = YawController(wheel_base, steer_ratio, 0.1, max_lat_accel, max_steer_angle)
 
-	    kp = 0.3
-	    ki = 0.1
-	    kd = 0.
-	    mn = 0. # Minimum throttle value
-	    mx = 0.2 # Maximum throttle value
-	    self.throttle_controller = PID(kp, ki, kd, mn, mx)
+        kp = 0.3
+        ki = 0.1
+        kd = 0.
+        mn = 0. # Minimum throttle value
+        mx = 0.2 # Maximum throttle value
+        # kp = 1
+        # ki = 1
+        # kd = 1
+        # mn = 0. # Minimum throttle value
+        # mx = 1 # Maximum throttle value
+        self.throttle_controller = PID(kp, ki, kd, mn, mx)
 
-	    tau = 0.5 # 1/(2pi*tay = cutoff frequency)
-	    ts = .02 # sample time
-	    self.vel_lpf = LowPassFilter(tau, ts)
+        kp = 4.
+        ki = 1.
+        kd = 2.
+        mn = -math.pi/3
+        mx = math.pi/3
+        self.steering_controller = PID(kp, ki, kd, mn, mx)
 
-	    self.vehicle_mass = vehicle_mass
-	    self.fuel_capacity = fuel_capacity
-	    self.brake_deadband = brake_deadband
-	    self.decel_limit = decel_limit
-	    self.accel_limit =  accel_limit
-	    self.wheel_radius = wheel_radius
+        tau = 0.5 # 1/(2pi*tay = cutoff frequency)
+        ts = .02 # sample time
+        self.vel_lpf = LowPassFilter(tau, ts)
+        self.ang_vel_lpf = LowPassFilter(1, 1)
 
-	    self.last_time = rospy.get_time()
+        self.vehicle_mass = vehicle_mass
+        self.fuel_capacity = fuel_capacity
+        self.brake_deadband = brake_deadband
+        self.decel_limit = decel_limit
+        self.accel_limit =  accel_limit
+        self.wheel_radius = wheel_radius
+
+        self.last_time = rospy.get_time()
 
     # def control(self, *args, **kwargs):
     #     # TODO: Change the arg, kwarg list to suit your needs
@@ -43,8 +58,9 @@ class Controller(object):
     #     return 1., 0., 0.
     def control(self, current_vel, curr_ang_vel, dbw_enabled, linear_vel, angular_vel):
     	if not dbw_enabled:
-    		self.throttle_controller.reset()
-    		return 0., 0., 0
+            self.throttle_controller.reset()
+            self.steering_controller.reset()
+            return 0., 0., 0
 
     	current_vel = self.vel_lpf.filt(current_vel)
 
@@ -68,10 +84,10 @@ class Controller(object):
     		decel = max(vel_error, self.decel_limit)
     		brake = abs(decel) * self.vehicle_mass * self.wheel_radius # Torque N * m
 
-        curr_ang_vel = self.vel_lpf.filt(curr_ang_vel)
-        angular_velocity_error = angular_vel - curr_ang_vel
+        # curr_ang_vel = self.vel_lpf.filt(curr_ang_vel)
+        ang_vel_error = angular_vel - curr_ang_vel
         steering = self.yaw_controller.get_steering(linear_vel, angular_vel, current_vel)
-        steering = steering + self.throttle_controller.step(angular_velocity_error, sample_time)
-        # steering =  self.vel_lpf.filt(steering)
+        steering = steering + self.steering_controller.step(ang_vel_error, sample_time)
+        steering =  self.ang_vel_lpf.filt(steering)
 
     	return throttle, brake, steering
