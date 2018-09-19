@@ -101,7 +101,7 @@ class DBWNode(object):
                                                                         self.angular_vel)
                 # self.steering = -0.25
 
-                rospy.loginfo("=== lazzzy  === : throttle: %f, brake: %f, steering: %f", 
+                rospy.loginfo("=== from twist  === : throttle: %f, brake: %f, steering: %f", 
                     self.throttle, self.brake, self.steering)
             if self.dbw_enabled:
                 self.publish(self.throttle, self.brake, self.steering)

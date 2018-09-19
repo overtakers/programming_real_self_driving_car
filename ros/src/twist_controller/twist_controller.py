@@ -62,6 +62,7 @@ class Controller(object):
             self.steering_controller.reset()
             return 0., 0., 0
 
+
     	current_vel = self.vel_lpf.filt(current_vel)
 
 
@@ -87,6 +88,7 @@ class Controller(object):
         # curr_ang_vel = self.vel_lpf.filt(curr_ang_vel)
         ang_vel_error = angular_vel - curr_ang_vel
         steering = self.yaw_controller.get_steering(linear_vel, angular_vel, current_vel)
+        steering = self.steering_controller.step(ang_vel_error, sample_time)
         steering = steering + self.steering_controller.step(ang_vel_error, sample_time)
         steering =  self.ang_vel_lpf.filt(steering)
 
