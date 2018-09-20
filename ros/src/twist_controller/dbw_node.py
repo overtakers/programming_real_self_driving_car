@@ -71,8 +71,8 @@ class DBWNode(object):
         rospy.Subscriber('/twist_cmd', TwistStamped, self.twist_cb)
         rospy.Subscriber('/current_velocity', TwistStamped, self.velocity_cb)
 
-        self.current_vel = None
-        self.curr_ang_vel = None
+        self.proposed_vel = None
+        self.proposed_ang_vel = None
         self.dbw_enabled = None
         self.linear_vel = None
         self.angular_vel = None
@@ -93,16 +93,16 @@ class DBWNode(object):
             #                                                     <any other argument you need>)
             # if <dbw is enabled>:
             #   self.publish(throttle, brake, steer)
-            if not None in (self.current_vel, self.linear_vel, self.angular_vel):
-                self.throttle, self.brake, self.steering = self.controller.control(self.current_vel, 
-                                                                        self.curr_ang_vel,
+            if not None in (self.proposed_vel, self.linear_vel, self.angular_vel):
+                self.throttle, self.brake, self.steering = self.controller.control(self.proposed_vel, 
+                                                                        self.proposed_ang_vel,
                                                                         self.dbw_enabled,
                                                                         self.linear_vel,
                                                                         self.angular_vel)
                 # self.steering = -0.25
 
-                rospy.loginfo("=== from twist  === : throttle: %f, brake: %f, steering: %f", 
-                    self.throttle, self.brake, self.steering)
+                # rospy.loginfo("=== from twist  === : throttle: %f, brake: %f, steering: %f", 
+                    # self.throttle, self.brake, self.steering)
             if self.dbw_enabled:
                 self.publish(self.throttle, self.brake, self.steering)
 
@@ -112,12 +112,13 @@ class DBWNode(object):
         self.dbw_enabled = msg
 
     def twist_cb(self, msg):
+        rospy.loginfo("twist cb called----")
         self.linear_vel = msg.twist.linear.x
         self.angular_vel = msg.twist.angular.z
 
     def velocity_cb(self, msg):
-        self.current_vel = msg.twist.linear.x
-        self.curr_ang_vel = msg.twist.angular.z
+        self.proposed_vel = msg.twist.linear.x
+        self.proposed_ang_vel = msg.twist.angular.z
 
     def publish(self, throttle, brake, steer):
         tcmd = ThrottleCmd()
