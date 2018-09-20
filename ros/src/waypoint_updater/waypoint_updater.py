@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-import numpy as np
 import rospy
 from geometry_msgs.msg import PoseStamped
 from styx_msgs.msg import Lane, Waypoint
+
 from scipy.spatial import KDTree
 
-
+import numpy as np
 import math
 
 '''
@@ -48,16 +48,36 @@ class WaypointUpdater(object):
         self.loop()
         # rospy.spin()
 
+    # def loop(self):
+    #     rate = rospy.Rate(50)
+    #     while not rospy.is_shutdown():
+    #         if self.pose and self.base_waypoints:
+    #             # get closest waypoint
+    #             closest_waypoint_idx = self.get_closest_waypoint_idx()
+    #             self.publish_waypoints(closest_waypoint_idx)
+    #         rate.sleep()
     def loop(self):
         rate = rospy.Rate(50)
         while not rospy.is_shutdown():
             if self.pose and self.base_waypoints:
+                # if self.pose is None or self.base_waypoints is None:
+                if self.pose is None:                    
+                    ros.loginfo("Pose is None!")
+                    return
+
+                if self.base_waypoints is None:
+                    ros.loginfo("base_lane is None!")
+                    return
+
                 # get closest waypoint
                 closest_waypoint_idx = self.get_closest_waypoint_idx()
                 self.publish_waypoints(closest_waypoint_idx)
             rate.sleep()
 
     def get_closest_waypoint_idx(self):
+        if self.waypoint_tree is None:
+            return 0
+
         x = self.pose.pose.position.x
         y = self.pose.pose.position.y
         closest_idx = self.waypoint_tree.query([x, y], 1)[1]
@@ -72,7 +92,8 @@ class WaypointUpdater(object):
         pos_vect = np.array([x, y])
 
         val = np.dot(cl_vect - prev_vect, pos_vect - cl_vect)
-
+        # if the closest waypoint is behind the car, the dot product is positive
+        # and we need to take the next closest waypoint
         if val > 0:
             closest_idx = (closest_idx + 1) % len(self.waypoints_2d)
         return closest_idx
