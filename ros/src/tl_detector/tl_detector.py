@@ -117,6 +117,7 @@ class TLDetector(object):
             msg (Image): image from car-mounted camera
 
         """
+        # rospy.loginfo("image!")
         self.has_image = True
         self.camera_image = msg
         # light_wp, state = self.process_traffic_lights()
@@ -164,6 +165,7 @@ class TLDetector(object):
 
         """
         if(not self.has_image):
+            rospy.loginfo("no image")
             self.prev_light_loc = None
             return False
 
@@ -207,6 +209,7 @@ class TLDetector(object):
 
         if closest_light:
             state = self.get_light_state(closest_light)
+            # rospy.loginfo("state=%d", state)
             return line_wp_idx, state
         # self.waypoints = None
 
