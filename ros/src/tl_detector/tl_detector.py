@@ -35,6 +35,8 @@ class TLDetector(object):
         sub1 = rospy.Subscriber('/current_pose', PoseStamped, self.pose_cb)
         sub2 = rospy.Subscriber('/base_waypoints', Lane, self.waypoints_cb)
 
+
+
         '''
         /vehicle/traffic_lights provides you with the location of the traffic light in 3D map space and
         helps you acquire an accurate ground truth data source for the traffic light
@@ -44,6 +46,13 @@ class TLDetector(object):
         '''
         sub3 = rospy.Subscriber('/vehicle/traffic_lights', TrafficLightArray, self.traffic_cb)
         sub6 = rospy.Subscriber('/image_color', Image, self.image_cb)
+
+        #############
+        # for test
+        rospy.Subscriber('/vehicle/dbw_enabled', Bool, self.dbw_enabled_cb)
+        self.dbw_enabled = None
+        # end test
+        #############
 
         config_string = rospy.get_param("/traffic_light_config")
         self.config = yaml.load(config_string)
@@ -91,6 +100,11 @@ class TLDetector(object):
             else:
                 self.upcoming_red_light_pub.publish(Int32(self.last_wp))
             self.state_count += 1
+
+
+    def dbw_enabled_cb(self, msg):
+        self.dbw_enabled = msg
+
 
     def pose_cb(self, msg):
         self.pose = msg
@@ -164,7 +178,7 @@ class TLDetector(object):
             int: ID of traffic light color (specified in styx_msgs/TrafficLight)
 
         """
-        if(not self.has_image):
+        if not self.has_image:
             rospy.loginfo("no image")
             self.prev_light_loc = None
             return False
@@ -209,10 +223,12 @@ class TLDetector(object):
 
         if closest_light:
             state = self.get_light_state(closest_light)
-            rospy.loginfo("state=%d", state)
+            if self.dbw_enabled:
+                rospy.loginfo("state=%d", state)
             return line_wp_idx, state
         # self.waypoints = None
-
+        if self.dbw_enabled:
+            rospy.loginfo("state=%d", TrafficLight.UNKNOWN)
         return -1, TrafficLight.UNKNOWN
 
 if __name__ == '__main__':

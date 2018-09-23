@@ -44,6 +44,6 @@ class TLClassifier(object):
         image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
         pred = self.sess.run(self.predictions,
              feed_dict={ self.img_input: image})
-        rospy.loginfo("pred=%s",pred)
+        # rospy.loginfo("pred=%s",pred)
         return pred[0]
         # return TrafficLight.UNKNOWN
