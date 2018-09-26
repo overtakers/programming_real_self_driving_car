@@ -1,5 +1,6 @@
 actionlib==1.11.13
 angles==1.9.11
+asn1crypto==0.24.0
 attrdict==2.0.0
 attrs==15.2.0
 autobahn==0.10.3
@@ -10,9 +11,10 @@ bzr==2.7.0
 catkin==0.7.14
 catkin-pkg==0.4.8
 catkin-pkg-modules==0.4.8
+cffi==1.11.5
 click==6.7
 configobj==5.0.6
-cryptography==1.2.3
+cryptography==2.3.1
 cv-bridge==1.12.8
 defusedxml==0.4.1
 diagnostic-analysis==1.9.3
@@ -36,7 +38,7 @@ genpy==0.6.7
 greenlet==0.4.15
 h5py==2.6.0
 html5lib==0.9999999
-idna==2.0
+idna==2.7
 image-geometry==1.12.8
 ipaddress==1.0.16
 itsdangerous==0.24
@@ -62,8 +64,9 @@ protobuf==3.6.1
 psutil==3.4.2
 pyasn1==0.1.9
 pyasn1-modules==0.0.7
+pycparser==2.19
 pycrypto==2.6.1
-pyOpenSSL==0.15.1
+pyOpenSSL==18.0.0
 pyparsing==2.0.3
 pyserial==3.0.1
 Pyste==0.9.10

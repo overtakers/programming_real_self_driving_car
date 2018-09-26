@@ -34,6 +34,12 @@ $ pip install -r requirements.txt
 $ rosdep update # yes, even if we have that in Dockerfile
 ```
 
+**NB**
+You may need to update the cryptography packages:
+```
+$ python -m easy_install --upgrade pyOpenSSL 
+```
+
 
 
 ### Port Forwarding
