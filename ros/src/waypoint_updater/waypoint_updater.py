@@ -94,19 +94,13 @@ class WaypointUpdater(object):
             closest_idx = (closest_idx + 1) % len(self.waypoints_2d)
         return closest_idx
 
-    # def publish_waypoints(self, closest_idx):
-    #     lane = Lane()
-    #     lane.header =  self.base_waypoints.header
-    #     lane.waypoints = self.base_waypoints.waypoints[closest_idx:closest_idx + LOOKAHEAD_WPS]
-    #     # rospy.loginfo('waypoints: %s', lane.waypoints)
-    #     self.final_waypoints_pub.publish(lane)
+
     def publish_waypoints(self):
         final_lane = self.generate_lane()
         self.final_waypoints_pub.publish(final_lane)
 
     def generate_lane(self):
         lane = Lane()
-        # rospy.loginfo("self.base_lane:%s", self.base_lane)
 
         closest_idx = self.get_closest_waypoint_idx()
         farthest_idx = closest_idx + LOOKAHEAD_WPS
@@ -142,7 +136,7 @@ class WaypointUpdater(object):
         
 
     def waypoints_cb(self, waypoints):
-        rospy.loginfo("waypoints:%s", waypoints)
+        # rospy.loginfo("waypoints:%s", waypoints)
         self.base_waypoints =  waypoints
         if not self.waypoints_2d:
             self.waypoints_2d = [
