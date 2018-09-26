@@ -176,6 +176,7 @@ class TLDetector(object):
 
         if closest_light:
             state = self.get_light_state(closest_light)
+            rospy.loginfo("light state=%d", state)
             return line_wp_idx, state
 
         # self.waypoints = None
