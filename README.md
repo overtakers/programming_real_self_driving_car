@@ -56,6 +56,7 @@ git clone https://github.com/udacity/CarND-Capstone.git
 ```bash
 cd CarND-Capstone
 pip install -r requirements.txt
+pip install Pillow --upgrade #necessary to fix the camera problem
 ```
 3. Make and run styx
 ```bash
