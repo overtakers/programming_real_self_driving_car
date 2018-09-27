@@ -29,15 +29,15 @@ docker build . -t capstone
 
 Run the docker file
 ```bash
-$ docker run --rm -it -p 4567:4567 -v "/$(pwd)":/capstone -v /tmp/log:/root/.ros/ capstone
-$ pip install -r requirements.txt
-$ rosdep update # yes, even if we have that in Dockerfile
+docker run --rm -it -p 4567:4567 -v "/$(pwd)":/capstone -v /tmp/log:/root/.ros/ capstone
+pip install -r requirements.txt
+rosdep update # yes, even if we have that in Dockerfile
 ```
 
 **NB**
 You may need to update the cryptography packages:
 ```
-$ python -m easy_install --upgrade pyOpenSSL 
+python -m easy_install --upgrade pyOpenSSL 
 ```
 
 
