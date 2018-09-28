@@ -30,8 +30,6 @@ docker build . -t capstone
 Run the docker file
 ```bash
 docker run --rm -it -p 4567:4567 -v "/$(pwd)":/capstone -v /tmp/log:/root/.ros/ capstone
-pip install -r requirements.txt
-rosdep update # yes, even if we have that in Dockerfile
 ```
 
 **NB**
@@ -58,14 +56,18 @@ cd CarND-Capstone
 pip install -r requirements.txt
 pip install Pillow --upgrade #necessary to fix the camera problem
 ```
-3. Make and run styx
+3. Update ROS environment
+```bash
+rosdep update # yes, even if we have that in Dockerfile
+```
+4. Make and run styx
 ```bash
 cd ros
 catkin_make
 source devel/setup.sh
 roslaunch launch/styx.launch
 ```
-4. Run the simulator
+5. Run the simulator
 
 ### Real world testing
 1. Download [training bag](https://s3-us-west-1.amazonaws.com/udacity-selfdrivingcar/traffic_light_bag_file.zip) that was recorded on the Udacity self-driving car.
