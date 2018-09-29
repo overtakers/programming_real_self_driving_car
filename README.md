@@ -24,18 +24,21 @@ Please use **one** of the two installation options, either native **or** docker 
 
 Build the docker container
 ```bash
-docker buil --rmd . -t capstone
+docker build --rm . -t capstone
 ```
 
 Run the docker file
 ```bash
-docker run --rm -it -p 4567:4567 -v "/$(pwd)":/capstone -v /tmp/log:/root/.ros/ capstone
+docker run --rm -it -p 4567:4567  -v "/$(pwd)":/capstone -v /tmp/log:/root/.ros/ capstone
 ```
 
 **NB**
 You may need to update the cryptography packages:
-```
-python -m easy_install --upgrade pyOpenSSL 
+```bash
+apt-get --auto-remove --yes remove python-openssl
+pip install pyopenssl
+apt-get install ros-kinetic-cv-bridge
+apt-get install ros-kinetic-pcl-ros
 ```
 
 
