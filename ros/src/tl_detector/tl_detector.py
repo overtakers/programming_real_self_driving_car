@@ -99,7 +99,7 @@ class TLDetector(object):
             # create the directory to save to if not already create
             if not os.path.exists(SIMULATOR_DIR):
                 rospy.loginfo("Folder created")
-                os.makedir(SIMULATOR_DIR)
+                os.mkdir(SIMULATOR_DIR)
             else:
                 rospy.loginfo("Folder already created!")
 
