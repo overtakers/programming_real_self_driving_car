@@ -98,10 +98,8 @@ class TLDetector(object):
         if self.dbw_enabled:
             # create the directory to save to if not already create
             if not os.path.exists(SIMULATOR_DIR):
-                rospy.loginfo("Folder created")
-                os.mkdir(SIMULATOR_DIR)
+                os.makedirs(SIMULATOR_DIR)
             else:
-                rospy.loginfo("Folder already created!")
 
         light_wp, state = self.process_traffic_lights()
 
