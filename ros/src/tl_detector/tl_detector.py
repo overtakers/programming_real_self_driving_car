@@ -12,6 +12,7 @@ import cv2
 import yaml
 
 import os
+import uuid
 
 from scipy.spatial import KDTree
 
@@ -90,7 +91,6 @@ class TLDetector(object):
             msg (Image): image from car-mounted camera
 
         """
-        rospy.loginfo("image_cb called")
         self.has_image = True
         self.camera_image = msg
 
@@ -99,7 +99,10 @@ class TLDetector(object):
             # create the directory to save to if not already create
             if not os.path.exists(SIMULATOR_DIR):
                 os.makedirs(SIMULATOR_DIR)
-            else:
+
+            cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
+            filename = os.path.join(SIMULATOR_DIR, "{}.png".format(str(uuid.uuid4())))
+            cv2.imwrite(filename, cv_image)
 
         light_wp, state = self.process_traffic_lights()
 
