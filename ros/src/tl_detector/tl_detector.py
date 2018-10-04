@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import rospy
-from std_msgs.msg import Int32
+from std_msgs.msg import Int32, Bool
 from geometry_msgs.msg import PoseStamped, Pose
 from styx_msgs.msg import TrafficLightArray, TrafficLight
 from styx_msgs.msg import Lane
@@ -11,9 +11,13 @@ import tf
 import cv2
 import yaml
 
+import os
+import uuid
+
 from scipy.spatial import KDTree
 
 STATE_COUNT_THRESHOLD = 3
+SIMULATOR_DIR = "datasets"
 
 class TLDetector(object):
     def __init__(self):
@@ -31,6 +35,8 @@ class TLDetector(object):
         self.waypoint_tree = None
         self.lights = []
 
+        self.dbw_enabled = None
+
         sub1 = rospy.Subscriber('/current_pose', PoseStamped, self.pose_cb)
         sub2 = rospy.Subscriber('/base_waypoints', Lane, self.waypoints_cb)
 
@@ -43,6 +49,7 @@ class TLDetector(object):
         '''
         sub3 = rospy.Subscriber('/vehicle/traffic_lights', TrafficLightArray, self.traffic_cb)
         sub6 = rospy.Subscriber('/image_color', Image, self.image_cb)
+        sub7 = rospy.Subscriber('/vehicle/dbw_enabled', Bool, self.dbw_enabled_cb)
 
         config_string = rospy.get_param("/traffic_light_config")
         self.config = yaml.load(config_string)
@@ -73,6 +80,9 @@ class TLDetector(object):
     def traffic_cb(self, msg):
         self.lights = msg.lights
 
+    def dbw_enabled_cb(self, msg):
+        self.dbw_enabled = msg
+
     def image_cb(self, msg):
         """Identifies red lights in the incoming camera image and publishes the index
             of the waypoint closest to the red light's stop line to /traffic_waypoint
@@ -81,9 +91,19 @@ class TLDetector(object):
             msg (Image): image from car-mounted camera
 
         """
-        rospy.loginfo("image_cb called")
         self.has_image = True
         self.camera_image = msg
+
+        # save some image to disk, switch on the automatic mode to activate the saving
+        if self.dbw_enabled:
+            # create the directory to save to if not already create
+            if not os.path.exists(SIMULATOR_DIR):
+                os.makedirs(SIMULATOR_DIR)
+
+            cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
+            filename = os.path.join(SIMULATOR_DIR, "{}.png".format(str(uuid.uuid4())))
+            cv2.imwrite(filename, cv_image)
+
         light_wp, state = self.process_traffic_lights()
 
         '''
@@ -177,7 +197,7 @@ class TLDetector(object):
 
         if closest_light:
             state = self.get_light_state(closest_light)
-            rospy.loginfo("light state=%d", state)
+            # rospy.loginfo("light state=%d", state)
             return line_wp_idx, state
 
         # self.waypoints = None
