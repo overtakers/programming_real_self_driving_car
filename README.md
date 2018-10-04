@@ -4,10 +4,10 @@ The code in this repo is our submission for the final project of the Udacity Sel
 
 Our group, the "Overtakers", consists of the following members:
 
- - [Martin Kan](martinkan@gmail.com) 
- - [Batururimi Ezistas](s.batururimi@gmail.com)
- - [Shuang Gao](rebecca.shuang@gmail.com)
- - [Yue Jiang](maze1024@gmail.com)
+ - [Martin Kan](mailto:martinkan@gmail.com) 
+ - [Batururimi Ezistas](mailto:s.batururimi@gmail.com)
+ - [Shuang Gao](mailto:rebecca.shuang@gmail.com)
+ - [Yue Jiang](mailto:maze1024@gmail.com)
  
 ## Setup instructions
 
