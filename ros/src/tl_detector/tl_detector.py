@@ -95,14 +95,14 @@ class TLDetector(object):
         self.camera_image = msg
 
         # save some image to disk, switch on the automatic mode to activate the saving
-        if self.dbw_enabled:
-            # create the directory to save to if not already create
-            if not os.path.exists(SIMULATOR_DIR):
-                os.makedirs(SIMULATOR_DIR)
-
-            cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
-            filename = os.path.join(SIMULATOR_DIR, "{}.png".format(str(uuid.uuid4())))
-            cv2.imwrite(filename, cv_image)
+#        if self.dbw_enabled:
+#            # create the directory to save to if not already create
+#            if not os.path.exists(SIMULATOR_DIR):
+#                os.makedirs(SIMULATOR_DIR)
+#
+#            cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
+#            filename = os.path.join(SIMULATOR_DIR, "{}.png".format(str(uuid.uuid4())))
+#            cv2.imwrite(filename, cv_image)
 
         light_wp, state = self.process_traffic_lights()
 

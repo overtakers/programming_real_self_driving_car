@@ -91,6 +91,20 @@ roslaunch launch/styx.launch
 ```
 6. Run the simulator
 
+### Simulator dataset
+You can extract simulator images by uncommenting the following code in `ros/src/tl_detector/tl_detector.py` in `image_cb`:
+```python
+if self.dbw_enabled:
+            # create the directory to save to if not already create
+            if not os.path.exists(SIMULATOR_DIR):
+                os.makedirs(SIMULATOR_DIR)
+
+            cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
+            filename = os.path.join(SIMULATOR_DIR, "{}.png".format(str(uuid.uuid4())))
+            cv2.imwrite(filename, cv_image)
+```
+Some already extracted images can be found [here](https://transfer.sh/QpFVG/dataset_sim.zip)
+
 ### Real world testing
 1. Download [training bag](https://s3-us-west-1.amazonaws.com/udacity-selfdrivingcar/traffic_light_bag_file.zip) that was recorded on the Udacity self-driving car.
 2. Unzip the file
