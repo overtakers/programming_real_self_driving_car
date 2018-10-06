@@ -8,6 +8,7 @@ Our group, the "Overtakers", consists of the following members:
  - [Batururimi Ezistas](mailto:s.batururimi@gmail.com)
  - [Shuang Gao](mailto:rebecca.shuang@gmail.com)
  - [Yue Jiang](mailto:maze1024@gmail.com)
+ - [Yocheved Weill](mailto:yocheved.ovits@gmail.com)
  
 ## Setup instructions
 
