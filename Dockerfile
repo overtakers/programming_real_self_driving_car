@@ -10,7 +10,7 @@ RUN apt-get update
 
 # setup rosdep
 RUN sh -c 'echo "yaml http://packages.dataspeedinc.com/ros/ros-public-'$ROS_DISTRO'.yaml '$ROS_DISTRO'" > /etc/ros/rosdep/sources.list.d/30-dataspeed-public-'$ROS_DISTRO'.list'
-RUN rosdep update
+RUN rosdep update && apt-get update
 RUN apt-get install -y ros-$ROS_DISTRO-dbw-mkz
 RUN apt-get upgrade -y
 # end installing Dataspeed DBW
@@ -19,7 +19,7 @@ RUN apt-get upgrade -y
 RUN apt-get install -y python-pip
 RUN pip install --upgrade pip
 COPY requirements.txt ./requirements.txt
-RUN pip install -r requirements.txt
+RUN pip install -U pip && pip install -r requirements.txt
 
 # install required ros dependencies
 RUN apt-get install -y ros-$ROS_DISTRO-cv-bridge

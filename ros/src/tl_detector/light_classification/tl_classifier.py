@@ -2,6 +2,8 @@ from styx_msgs.msg import TrafficLight
 import rospy
 
 import tensorflow as tf
+import datetime
+import numpy as np
 import cv2
 import sys
 import os
@@ -14,21 +16,25 @@ import time
 import glob
 
 class TLClassifier(object):
-#    def __init__(self):
-#        #TODO load classifier
-#        ckpt_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'traffic_light_classifier'))
-#        modelPath = os.path.join(ckpt_path, "logs/deploy/graph_optimized.pb")
-#        # rospy.loginfo("path: %s", modelPath)
-#
-#        with tf.gfile.GFile(modelPath, 'rb') as f:
-#            graph_def_optimized = tf.GraphDef()
-#            graph_def_optimized.ParseFromString(f.read())
-#
-#        G = tf.Graph()
-#        self.sess = tf.InteractiveSession(graph=G)
-#        tf.import_graph_def(graph_def_optimized, name='')
-#        self.predictions = G.get_tensor_by_name('predictions:0')
-#        self.img_input = G.get_tensor_by_name('inputs:0')
+    def __init__(self):
+        GRAPH_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'traffic_light_classifier/model/sim/frozen_inference_graph.pb'))
+
+        self.graph = tf.Graph()
+
+        with self.graph.as_default():
+            od_graph_def = tf.GraphDef()
+            with tf.gfile.GFile(GRAPH_PATH, 'rb') as fid:
+                od_graph_def.ParseFromString(fid.read())
+                tf.import_graph_def(od_graph_def, name='')
+
+            self.image_tensor = self.graph.get_tensor_by_name('image_tensor:0')
+            self.boxes = self.graph.get_tensor_by_name('detection_boxes:0')
+            self.scores = self.graph.get_tensor_by_name('detection_scores:0')
+            self.classes = self.graph.get_tensor_by_name('detection_classes:0')
+            self.num_detections = self.graph.get_tensor_by_name(
+                'num_detections:0')
+
+        self.sess = tf.Session(graph=self.graph)
 
     def get_classification(self, image):
         """Determines the color of the traffic light in the image
@@ -40,10 +46,30 @@ class TLClassifier(object):
             int: ID of traffic light color (specified in styx_msgs/TrafficLight)
 
         """
-        #TODO implement light color prediction
-#        image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
-#        pred = self.sess.run(self.predictions,
-#             feed_dict={ self.img_input: image})
-#
-#       return pred[0]
+        with self.graph.as_default():
+            img_expand = np.expand_dims(image, axis=0)
+            start = datetime.datetime.now()
+            (boxes, scores, classes, num_detections) = self.sess.run(
+                [self.boxes, self.scores, self.classes, self.num_detections],
+                feed_dict={self.image_tensor: img_expand})
+            end = datetime.datetime.now()
+            c = end - start
+            print(c.total_seconds())
+
+        boxes = np.squeeze(boxes)
+        scores = np.squeeze(scores)
+        classes = np.squeeze(classes).astype(np.int32)
+
+        print('SCORES: ', scores[0])
+        print('CLASSES: ', classes[0])
+
+        if classes[0] == 1:
+            print('GREEN')
+            return TrafficLight.GREEN
+        elif classes[0] == 2:
+            print('RED')
+            return TrafficLight.RED
+        elif classes[0] == 3:
+            print('YELLOW')
+            return TrafficLight.YELLOW
         return TrafficLight.UNKNOWN
