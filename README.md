@@ -44,6 +44,29 @@ Run the docker file
 docker run --rm -it -p 4567:4567  -v "/$(pwd)":/capstone -v /tmp/log:/root/.ros/ capstone
 ```
 
+### Docker Installation With Nvidia GPU
+Install [nvidia-docker](https://github.com/NVIDIA/nvidia-docker)
+
+Build the docker container
+```bash
+docker build --file GPU.dockerfile . -t capstone-gpu
+```
+Run the docker file
+```bash
+docker run --runtime=nvidia --rm -it -p 4567:4567  -v "/$(pwd)":/capstone -v /tmp/log:/root/.ros/ capstone-gpu
+```
+
+Run Sim
+```
+source "/opt/ros/$ROS_DISTRO/setup.bash"
+catkin_make
+source devel/setup.sh
+roslaunch launch/styx.launch
+```
+
+
+
+
 **NB**
 You may need to update the cryptography packages:
 ```bash
