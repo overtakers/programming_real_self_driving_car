@@ -34,7 +34,6 @@ class WaypointUpdater(object):
 
         self.final_waypoints_pub = rospy.Publisher('final_waypoints', Lane, queue_size=1)
 
-        # TODO: Add other member variables you need below
         self.base_lane = None
         self.pose = None
         self.stopline_wp_idx = -1
@@ -112,11 +111,7 @@ class WaypointUpdater(object):
             self.waypoints_tree = KDTree(self.waypoints_2d)
 
     def traffic_cb(self, msg):
-        # TODO: Callback for /traffic_waypoint message. Implement
-        if (msg.data == -1):
-            self.stopline_wp_idx = -1
-        else:
-            self.stopline_wp_idx = msg.data
+        self.stopline_wp_idx = msg.data
 
     def obstacle_cb(self, msg):
         # TODO: Callback for /obstacle_waypoint message. We will implement it later
