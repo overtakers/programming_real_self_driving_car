@@ -56,14 +56,15 @@ class TLClassifier(object):
                 feed_dict={self.image_tensor: img_expand})
             end = datetime.datetime.now()
             c = end - start
-            print(c.total_seconds())
+            print("======================")
+            print("Time used: {time} s".format(time=c.total_seconds()))
 
         boxes = np.squeeze(boxes)
         scores = np.squeeze(scores)
         classes = np.squeeze(classes).astype(np.int32)
 
-        print('SCORES: ', scores[0])
-        print('CLASSES: ', classes[0])
+        print('SCORES: {score}'.format(score=scores[0]))
+        print('CLASSES: {classes}'.format(classes=classes[0]))
         
         if scores[0] > 0.15:
             if classes[0] == 1:
@@ -78,4 +79,5 @@ class TLClassifier(object):
                 print('YELLOW')
                 self.prev_list_state = TrafficLight.YELLOW
                 return TrafficLight.YELLOW
+        print('UNKNOWN')
         return self.prev_list_state if self.prev_list_state != TrafficLight.GREEN else TrafficLight.UNKNOWN
