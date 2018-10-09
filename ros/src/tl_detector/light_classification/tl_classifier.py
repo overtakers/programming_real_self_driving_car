@@ -21,6 +21,8 @@ class TLClassifier(object):
 
         self.graph = tf.Graph()
 
+        self.prev_list_state = TrafficLight.RED
+
         with self.graph.as_default():
             od_graph_def = tf.GraphDef()
             with tf.gfile.GFile(GRAPH_PATH, 'rb') as fid:
@@ -62,14 +64,18 @@ class TLClassifier(object):
 
         print('SCORES: ', scores[0])
         print('CLASSES: ', classes[0])
-
-        if classes[0] == 1:
-            print('GREEN')
-            return TrafficLight.GREEN
-        elif classes[0] == 2:
-            print('RED')
-            return TrafficLight.RED
-        elif classes[0] == 3:
-            print('YELLOW')
-            return TrafficLight.YELLOW
-        return TrafficLight.UNKNOWN
+        
+        if scores[0] > 0.15:
+            if classes[0] == 1:
+                print('GREEN')
+                self.prev_list_state = TrafficLight.GREEN
+                return TrafficLight.GREEN
+            elif classes[0] == 2:
+                print('RED')
+                self.prev_list_state = TrafficLight.RED
+                return TrafficLight.RED
+            elif classes[0] == 3:
+                print('YELLOW')
+                self.prev_list_state = TrafficLight.YELLOW
+                return TrafficLight.YELLOW
+        return self.prev_list_state if self.prev_list_state != TrafficLight.GREEN else TrafficLight.UNKNOWN

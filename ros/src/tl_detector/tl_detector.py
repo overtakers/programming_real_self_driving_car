@@ -157,7 +157,11 @@ class TLDetector(object):
         cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
 
         #Get classification
-        return self.light_classifier.get_classification(cv_image)
+        detected_light_state = self.light_classifier.get_classification(cv_image)
+
+        print("Detected: {detected} Actual: {actual}".format(detected=detected_light_state, actual=light.state))
+        return detected_light_state
+    
 
 
     def process_traffic_lights(self):
