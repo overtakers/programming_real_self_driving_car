@@ -147,8 +147,6 @@ class TLDetector(object):
             int: ID of traffic light color (specified in styx_msgs/TrafficLight)
 
         """
-        #for testing
-        # return light.state
 
         if(not self.has_image):
             self.prev_light_loc = None
@@ -201,10 +199,8 @@ class TLDetector(object):
 
         if closest_light:
             state = self.get_light_state(closest_light)
-            # rospy.loginfo("light state=%d", state)
             return line_wp_idx, state
 
-        # self.waypoints = None
         return -1, TrafficLight.UNKNOWN
 
 if __name__ == '__main__':
