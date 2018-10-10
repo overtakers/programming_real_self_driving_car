@@ -31,9 +31,9 @@ class Controller(object):
         # mx = 1 # Maximum throttle value
         self.throttle_controller = PID(kp, ki, kd, mn, mx)
 
-        kp = 20.
-        ki = 1.
-        kd = 2.
+        kp = 30.
+        ki = 0.1
+        kd = 1.
         mn = -math.pi/3
         mx = math.pi/3
         self.steering_controller = PID(kp, ki, kd, mn, mx)
