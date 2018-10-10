@@ -8,3 +8,6 @@ profile.tmp
 # datasets (heavy directory)
 ros/src/tl_detector/datasets/
 *.zip
+
+# VSCode
+.vscode
