@@ -39,8 +39,13 @@ docker build --rm . -t capstone
 ```
 
 Run the docker file
+**CPU**
 ```bash
 docker run --rm -it -p 4567:4567  -v "/$(pwd)":/capstone -v /tmp/log:/root/.ros/ capstone
+```
+**GPU**
+```
+docker run --runtime=nvidia --rm -it -p 4567:4567  -v "/$(pwd)":/capstone -v /tmp/log:/root/.ros/ capstone
 ```
 
 **NB**
@@ -75,7 +80,7 @@ pip install Pillow --upgrade #necessary to fix the camera problem
 # For CPU only 
 pip install tensorflow 
 # For CUDA enabled GPU cards
-pip install tensorflow-gpu
+pip install tensorflow-gpu==1.3.0
 ```
 
 4. Update ROS environment
@@ -104,6 +109,11 @@ if self.dbw_enabled:
             cv2.imwrite(filename, cv_image)
 ```
 Some already extracted images can be found [here](https://transfer.sh/QpFVG/dataset_sim.zip)
+
+# Model
+Using  frozen graph for SSD Inception V2 Coco (17/11/2017) trained with SIM data for 20,000 steps:
+https://transfer.sh/yhWuv/frozen_inference_graph.pb
+
 
 ### Real world testing
 1. Download [training bag](https://s3-us-west-1.amazonaws.com/udacity-selfdrivingcar/traffic_light_bag_file.zip) that was recorded on the Udacity self-driving car.
