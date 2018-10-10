@@ -35,14 +35,21 @@ Please use **one** of the two installation options, either native **or** docker 
 [Install Docker](https://docs.docker.com/engine/installation/)
 
 Build the docker container
+**Pure ROS**
 ```bash
 docker build --rm . -t capstone
 ```
-
 Run the docker file
 ```bash
 docker run --rm -it -p 4567:4567  -v "/$(pwd)":/capstone -v /tmp/log:/root/.ros/ capstone
 ```
+
+or
+**tensorflor GPU**
+```bash
+docker build --rm . -f GPU.dockerfile -t capstone
+```
+
 
 ### Docker Installation With Nvidia GPU
 Install [nvidia-docker](https://github.com/NVIDIA/nvidia-docker)
