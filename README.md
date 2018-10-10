@@ -69,7 +69,7 @@ source /opt/ros/kinetic/setup.bash
 
 ```
 catkin_make
-source devel/setup.sh
+source devel/setup.bash
 roslaunch launch/styx.launch
 ```
 

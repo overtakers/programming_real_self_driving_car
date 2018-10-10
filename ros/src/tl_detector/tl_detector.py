@@ -22,6 +22,8 @@ SIMULATOR_DIR = "datasets"
 class TLDetector(object):
     def __init__(self):
         rospy.init_node('tl_detector')
+	
+	self.is_simulator = bool(rospy.get_param("~is_simulator", True))
 
         self.pose = None
         self.waypoints = None
@@ -57,7 +59,7 @@ class TLDetector(object):
         self.upcoming_red_light_pub = rospy.Publisher('/traffic_waypoint', Int32, queue_size=1)
 
         self.bridge = CvBridge()
-        self.light_classifier = TLClassifier()
+        self.light_classifier = TLClassifier(self.is_simulator)
         self.listener = tf.TransformListener()
 
         rospy.spin()

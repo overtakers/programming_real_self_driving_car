@@ -12,28 +12,32 @@ import time
 import glob
 
 class TLClassifier(object):
-    def __init__(self):
-        GRAPH_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'traffic_light_classifier/model/sim/frozen_inference_graph.pb'))
+    def __init__(self, is_simulator):
+	if is_simulator:
+        	#GRAPH_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'traffic_light_classifier/model/sim/frozen_inference_graph.pb'))
+		GRAPH_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "SSD_Inception_V2_Coco_sim.pb"))
+                
+#                GRAPH_PATH = "./SSD_Inception_V2_Coco_sim.pb"
+                self.graph = tf.Graph()
 
-        self.graph = tf.Graph()
+        	self.prev_list_state = TrafficLight.RED
 
-        self.prev_list_state = TrafficLight.RED
+        	with self.graph.as_default():
+            		od_graph_def = tf.GraphDef()
+           		with tf.gfile.GFile(GRAPH_PATH, 'rb') as fid:
+                		od_graph_def.ParseFromString(fid.read())
+                		tf.import_graph_def(od_graph_def, name='')
 
-        with self.graph.as_default():
-            od_graph_def = tf.GraphDef()
-            with tf.gfile.GFile(GRAPH_PATH, 'rb') as fid:
-                od_graph_def.ParseFromString(fid.read())
-                tf.import_graph_def(od_graph_def, name='')
+            	self.image_tensor = self.graph.get_tensor_by_name('image_tensor:0')
+            	self.boxes = self.graph.get_tensor_by_name('detection_boxes:0')
+            	self.scores = self.graph.get_tensor_by_name('detection_scores:0')
+            	self.classes = self.graph.get_tensor_by_name('detection_classes:0')
+            	self.num_detections = self.graph.get_tensor_by_name(
+                	'num_detections:0')
 
-            self.image_tensor = self.graph.get_tensor_by_name('image_tensor:0')
-            self.boxes = self.graph.get_tensor_by_name('detection_boxes:0')
-            self.scores = self.graph.get_tensor_by_name('detection_scores:0')
-            self.classes = self.graph.get_tensor_by_name('detection_classes:0')
-            self.num_detections = self.graph.get_tensor_by_name(
-                'num_detections:0')
-
-        self.sess = tf.Session(graph=self.graph)
-
+        	self.sess = tf.Session(graph=self.graph)
+	else: # car model to be used
+            rospy.loginfo("is_simulator=False")
     def get_classification(self, image):
         """Determines the color of the traffic light in the image
 
@@ -44,6 +48,10 @@ class TLClassifier(object):
             int: ID of traffic light color (specified in styx_msgs/TrafficLight)
 
         """
+        if not self.graph: #used to test is_simulator
+            return  TrafficLight.UNKNOWN
+
+
         with self.graph.as_default():
             img_expand = np.expand_dims(image, axis=0)
             start = datetime.datetime.now()
