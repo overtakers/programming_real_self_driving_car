@@ -4,12 +4,24 @@ The code in this repo is our submission for the final project of the Udacity Sel
 
 Our group, the "Overtakers", consists of the following members:
 
- - [Martin Kan](mailto:martinkan@gmail.com) 
- - [Batururimi Ezistas](mailto:s.batururimi@gmail.com)
- - [Shuang Gao](mailto:rebecca.shuang@gmail.com)
- - [Yue Jiang](mailto:maze1024@gmail.com)
- - [Yocheved Weill](mailto:yocheved.ovits@gmail.com)
- 
+| Name  | Email Address |
+| ------------- | ------------- |
+| Martin Kan | martinkan@gmail.com |
+| Batururimi Ezistas | s.batururimi@gmail.com |
+| Shuang Gao | rebecca.shuang@gmail.com |
+| Yue Jiang | maze1024@gmail.com |
+| Yocheved Weill | yocheved.ovits@gmail.com |
+
+## Project Overview
+
+The structure of the project code is shown below:
+![Project Structure](imgs/final-project-ros-graph-v2.png)
+
+The Udacity team has provided us with helpful walkthroughs to guide us through the coding of most of the core functions of the self driving car.  As such, the majority of our codebase aligns closely with the demo code shown to us in the walkthroughs.  Our main contributions to the project code are as follows:
+
+- implementing a classifier that uses frozen graphs pre-trained with camera images from the simulation and from the Carla test track (see how we derived the frozen graphs in our traffic light classifier repo [here](https://github.com/overtakers/traffic-light-classification)) to identify the state of traffic light signals as observed by the car's video stream in [tl_classifier.py](https://github.com/overtakers/programming_real_self_driving_car/blob/master/ros/src/tl_detector/light_classification/tl_classifier.py) and [tl_detector.py](https://github.com/overtakers/programming_real_self_driving_car/blob/master/ros/src/tl_detector/tl_detector.py)
+- implementing a PID controller for the steering to reduce the effects of the car swerving from side to side when following the waypoints in [twist_controller.py](https://github.com/overtakers/programming_real_self_driving_car/blob/master/ros/src/twist_controller/twist_controller.py)
+
 ## Setup instructions
 
 Please use **one** of the two installation options, either native **or** docker installation.
@@ -103,26 +115,19 @@ cd CarND-Capstone
 pip install -r requirements.txt
 pip install Pillow --upgrade #necessary to fix the camera problem
 ```
-3. Install tensorflow
-```bash
-# For CPU only 
-pip install tensorflow 
-# For CUDA enabled GPU cards
-pip install tensorflow-gpu
-```
 
-4. Update ROS environment
+3. Update ROS environment
 ```bash
 rosdep update # yes, even if we have that in Dockerfile
 ```
-5. Make and run styx
+4. Make and run styx
 ```bash
 cd ros
 catkin_make
 source devel/setup.sh
 roslaunch launch/styx.launch
 ```
-6. Run the simulator
+5. Run the simulator
 
 ### Simulator dataset
 You can extract simulator images by uncommenting the following code in `ros/src/tl_detector/tl_detector.py` in `image_cb`:
@@ -154,7 +159,3 @@ cd CarND-Capstone/ros
 roslaunch launch/site.launch
 ```
 5. Confirm that traffic light detection works on real life images
-
-## Results
-
-To be completed
