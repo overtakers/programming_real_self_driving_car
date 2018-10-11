@@ -23,7 +23,7 @@ class TLDetector(object):
     def __init__(self):
         rospy.init_node('tl_detector')
 	
-	self.is_simulator = bool(rospy.get_param("~is_simulator", True))
+        self.is_simulator = bool(rospy.get_param("~is_simulator", True))
 
         self.pose = None
         self.waypoints = None
