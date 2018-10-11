@@ -106,12 +106,12 @@ To set up port forwarding, please refer to the [instructions from term 2](https:
 
 1. Clone the project repository
 ```bash
-git clone https://github.com/udacity/CarND-Capstone.git
+git clone https://github.com/overtakers/programming_real_self_driving_car.git
 ```
 
 2. Install python dependencies
 ```bash
-cd CarND-Capstone
+cd programming_real_self_driving_car
 pip install -r requirements.txt
 pip install Pillow --upgrade #necessary to fix the camera problem
 ```
@@ -155,7 +155,7 @@ rosbag play -l traffic_light_bag_file/traffic_light_training.bag
 ```
 4. Launch your project in site mode
 ```bash
-cd CarND-Capstone/ros
+cd programming_real_self_driving_car/ros
 roslaunch launch/site.launch
 ```
 5. Confirm that traffic light detection works on real life images
