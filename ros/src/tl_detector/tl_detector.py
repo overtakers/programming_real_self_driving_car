@@ -22,6 +22,8 @@ SIMULATOR_DIR = "datasets"
 class TLDetector(object):
     def __init__(self):
         rospy.init_node('tl_detector')
+	
+        self.is_simulator = bool(rospy.get_param("~is_simulator", True))
 
         self.pose = None
         self.waypoints = None
@@ -57,7 +59,7 @@ class TLDetector(object):
         self.upcoming_red_light_pub = rospy.Publisher('/traffic_waypoint', Int32, queue_size=1)
 
         self.bridge = CvBridge()
-        self.light_classifier = TLClassifier()
+        self.light_classifier = TLClassifier(self.is_simulator)
         self.listener = tf.TransformListener()
 
         rospy.spin()
@@ -147,17 +149,19 @@ class TLDetector(object):
             int: ID of traffic light color (specified in styx_msgs/TrafficLight)
 
         """
-        #for testing
-        return light.state
 
-        # if(not self.has_image):
-        #     self.prev_light_loc = None
-        #     return False
+        if(not self.has_image):
+            self.prev_light_loc = None
+            return False
 
-        # cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
+        cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
 
-        # #Get classification
-        # return self.light_classifier.get_classification(cv_image)
+        #Get classification
+        detected_light_state = self.light_classifier.get_classification(cv_image)
+
+        print("Detected: {detected} Actual: {actual}".format(detected=detected_light_state, actual=light.state))
+        return detected_light_state
+    
 
 
     def process_traffic_lights(self):
@@ -197,10 +201,8 @@ class TLDetector(object):
 
         if closest_light:
             state = self.get_light_state(closest_light)
-            # rospy.loginfo("light state=%d", state)
             return line_wp_idx, state
 
-        # self.waypoints = None
         return -1, TrafficLight.UNKNOWN
 
 if __name__ == '__main__':

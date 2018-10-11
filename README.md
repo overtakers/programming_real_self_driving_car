@@ -31,18 +31,50 @@ Please use **one** of the two installation options, either native **or** docker 
   * Use this option to install the SDK on a workstation that already has ROS installed: [One Line SDK Install (binary)](https://bitbucket.org/DataspeedInc/dbw_mkz_ros/src/81e63fcc335d7b64139d7482017d6a97b405e250/ROS_SETUP.md?fileviewer=file-view-default)
 * Download the [Udacity Simulator](https://github.com/udacity/CarND-Capstone/releases).
 
-### Docker Installation
+### Docker Installation (CPU)
 [Install Docker](https://docs.docker.com/engine/installation/)
 
-Build the docker container
+Build the docker image
 ```bash
 docker build --rm . -t capstone
+```
+Run the docker container
+```bash
+docker run --rm -it -p 4567:4567  -v "/$(pwd)":/capstone -v /tmp/log:/root/.ros/ capstone
+```
+
+
+
+### Docker Installation With Nvidia GPU
+Install [nvidia-docker](https://github.com/NVIDIA/nvidia-docker)
+
+```bash
+docker build --rm . -f GPU.dockerfile -t capstone-gpu
 ```
 
 Run the docker file
 ```bash
-docker run --rm -it -p 4567:4567  -v "/$(pwd)":/capstone -v /tmp/log:/root/.ros/ capstone
+docker run --runtime=nvidia --rm -it -p 4567:4567  -v "/$(pwd)":/capstone -v /tmp/log:/root/.ros/ capstone-gpu
 ```
+
+Run Sim
+```
+source "/opt/ros/$ROS_DISTRO/setup.bash"
+```
+
+For example
+```
+source /opt/ros/kinetic/setup.bash
+```
+
+```
+catkin_make
+source devel/setup.bash
+roslaunch launch/styx.launch
+```
+
+
+
 
 **NB**
 You may need to update the cryptography packages:
