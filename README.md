@@ -20,7 +20,7 @@ The structure of the project code is shown below:
 The Udacity team has provided us with helpful walkthroughs to guide us through the coding of most of the core functions of the self driving car.  As such, the majority of our codebase aligns closely with the demo code shown to us in the walkthroughs.  Our main contributions to the project code are as follows:
 
 - implementing a classifier that uses frozen graphs pre-trained with camera images from the simulation and from the Carla test track (see how we derived the frozen graphs in our traffic light classifier repo [here](https://github.com/overtakers/traffic-light-classification)) to identify the state of traffic light signals as observed by the car's video stream in [tl_classifier.py](https://github.com/overtakers/programming_real_self_driving_car/blob/master/ros/src/tl_detector/light_classification/tl_classifier.py) and [tl_detector.py](https://github.com/overtakers/programming_real_self_driving_car/blob/master/ros/src/tl_detector/tl_detector.py)
-- implementing a PID controller for the steering to reduce the effects of the car swerving from side to side when following the waypoints in [twist_controller.py](https://github.com/overtakers/programming_real_self_driving_car/blob/master/ros/src/twist_controller/twist_controller.py)
+- revising the waypoint_follower code to lower the threshold test for updating the twist commands which has the effect of reducing the swerving of the car from side to side when following the waypoints [pure_pursuit_core.h](https://github.com/overtakers/programming_real_self_driving_car/blob/master/ros/src/waypoint_follower/include/pure_pursuit_core.h)
 
 ## Setup instructions
 
