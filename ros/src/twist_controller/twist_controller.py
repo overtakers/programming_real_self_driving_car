@@ -19,11 +19,11 @@ class Controller(object):
 
         self.yaw_controller = YawController(wheel_base, steer_ratio, 0.1, max_lat_accel, max_steer_angle)
 
-        kp = 0.3
-        ki = 0.1
-        kd = 0.
+        kp = 0.5
+        ki = 0.3
+        kd = 0.2
         mn = 0. # Minimum throttle value
-        mx = 0.2 # Maximum throttle value
+        mx = 0.4 # Maximum throttle value
         # kp = 1
         # ki = 1
         # kd = 1
@@ -31,12 +31,12 @@ class Controller(object):
         # mx = 1 # Maximum throttle value
         self.throttle_controller = PID(kp, ki, kd, mn, mx)
 
-        kp = 30.
-        ki = 0.1
-        kd = 1.
-        mn = -math.pi/3
-        mx = math.pi/3
-        self.steering_controller = PID(kp, ki, kd, mn, mx)
+        # kp = 0.5
+        # ki = 0.00018
+        # kd = 5.5
+        # mn = -math.pi/3
+        # mx = math.pi/3
+        # self.steering_controller = PID(kp, ki, kd, mn, mx)
 
         tau = 0.5 # 1/(2pi*tay = cutoff frequency)
         ts = .02 # sample time
@@ -59,7 +59,7 @@ class Controller(object):
     def control(self, current_vel, curr_ang_vel, dbw_enabled, linear_vel, angular_vel):
     	if not dbw_enabled:
             self.throttle_controller.reset()
-            self.steering_controller.reset()
+            # self.steering_controller.reset()
             return 0., 0., 0
 
 
@@ -87,10 +87,10 @@ class Controller(object):
 
         steering = self.yaw_controller.get_steering(linear_vel , angular_vel , current_vel)
         # rospy.loginfo("steering=%f", steering)
-        # curr_ang_vel = self.vel_lpf.filt(curr_ang_vel)
-        ang_vel_error = angular_vel - curr_ang_vel
-        steering = steering + self.steering_controller.step(ang_vel_error, sample_time)
-        steering =  self.ang_vel_lpf.filt(steering)
+        #curr_ang_vel = self.vel_lpf.filt(curr_ang_vel)
+        #ang_vel_error = angular_vel - curr_ang_vel
+        #steering = steering + self.steering_controller.step(ang_vel_error, sample_time)
+        #steering =  self.ang_vel_lpf.filt(steering)
         
 
     	return throttle, brake, steering
